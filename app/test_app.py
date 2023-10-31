@@ -89,7 +89,7 @@ def test_get_metadata_partial_parameters(parameters):
             "title": "Labour Market Survey",
             "description": "Mock description",
             "sds_schema": "",
-        }
+        },
     ]
 
 
