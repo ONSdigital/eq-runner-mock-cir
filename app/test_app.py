@@ -61,21 +61,7 @@ def test_get_metadata_partial_parameters(parameters):
         params=parameters,
     )
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "ci_version": 1,
-            "data_version": "0.0.3",
-            "form_type": "9999",
-            "id": "f03eef55-0804-385c-c6a5-b099b483d9b1",
-            "language": "en",
-            "published_at": "2021-01-01T00:00:00.0000000Z",
-            "schema_version": "0.0.1",
-            "status": "PUBLISHED",
-            "survey_id": "001",
-            "title": "Labour Market Survey",
-            "description": "Mock description",
-            "sds_schema": "",
-        },
+    assert sorted(response.json(), key=lambda metadata: metadata.get("id")) == [
         {
             "ci_version": 1,
             "data_version": "0.0.3",
@@ -90,6 +76,20 @@ def test_get_metadata_partial_parameters(parameters):
             "description": "Mock description",
             "sds_schema": "",
         },
+        {
+            "ci_version": 1,
+            "data_version": "0.0.3",
+            "form_type": "9999",
+            "id": "f03eef55-0804-385c-c6a5-b099b483d9b1",
+            "language": "en",
+            "published_at": "2021-01-01T00:00:00.0000000Z",
+            "schema_version": "0.0.1",
+            "status": "PUBLISHED",
+            "survey_id": "001",
+            "title": "Labour Market Survey",
+            "description": "Mock description",
+            "sds_schema": "",
+        }
     ]
 
 
