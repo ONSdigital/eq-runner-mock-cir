@@ -44,18 +44,19 @@ def generate_guid_for_schema(schema_name: str, schema_language: str) -> UUID:
     return UUID(combined_hash[:32])
 
 
-def get_ci_metadata(guid: UUID, schema_json: dict) -> CiMetadata:
+def get_ci_metadata(guid: UUID, schema_name: str, schema_json: dict) -> CiMetadata:
     """
     For any fields where runner test schemas may be missing data that is mandatory in the CIR model,
     use a mock value for a more realistic response.
     """
     mock_data = {
-        "form_type": "ft",
         "published_at": "2021-01-01T00:00:00.0000000Z",
         "description": "Mock description",
         "status": "PUBLISHED",
         "ci_version": 1,
     }
+    # for the mock, set form type to the schema name for ease of identifying the schema
+    schema_json["form_type"] = schema_name
     return CiMetadata.model_validate(
         {**mock_data, **schema_json, "id": guid}, from_attributes=True
     )
@@ -69,7 +70,7 @@ def get_schema_data() -> tuple[list[CiMetadata], dict[UUID, dict]]:
     for schema in SCHEMAS_PATH.rglob("*.json"):
         schema_json = json.loads(schema.read_text())
         guid = generate_guid_for_schema(schema.stem, schema_json["language"])
-        metadata_collection.append(get_ci_metadata(guid, schema_json))
+        metadata_collection.append(get_ci_metadata(guid, schema.stem, schema_json))
         schema_map[guid] = schema_json
     return metadata_collection, schema_map
 

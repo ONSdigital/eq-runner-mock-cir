@@ -48,38 +48,24 @@ def test_get_instrument_invalid_uuid():
 @pytest.mark.parametrize(
     "parameters",
     [
-        {"survey_id": "001", "form_type": "9999", "language": "en"},
-        {"survey_id": "001", "form_type": "9999"},
-        {"form_type": "9999", "language": "en"},
-        {"form_type": "9999"},
+        {"survey_id": "001", "form_type": "health_demo", "language": "en"},
+        {"survey_id": "001", "form_type": "health_demo"},
+        {"form_type": "health_demo", "language": "en"},
+        {"form_type": "health_demo"},
     ],
 )
 def test_get_metadata_partial_parameters(parameters):
-    """Check that the two schemas valid for all these parameter combinations are returned"""
+    """Check that the schema valid for all these parameter combinations is returned"""
     response = client.get(
         "/v2/ci_metadata",
         params=parameters,
     )
     assert response.status_code == 200
-    assert sorted(response.json(), key=lambda metadata: metadata.get("id")) == [
+    assert response.json() == [
         {
             "ci_version": 1,
             "data_version": "0.0.3",
-            "form_type": "9999",
-            "id": "2283234a-0ead-7032-50f3-2e48a69d6579",
-            "language": "en",
-            "published_at": "2021-01-01T00:00:00.0000000Z",
-            "schema_version": "0.0.1",
-            "status": "PUBLISHED",
-            "survey_id": "001",
-            "title": "Labour Market Survey",
-            "description": "Mock description",
-            "sds_schema": "",
-        },
-        {
-            "ci_version": 1,
-            "data_version": "0.0.3",
-            "form_type": "9999",
+            "form_type": "health_demo",
             "id": "f03eef55-0804-385c-c6a5-b099b483d9b1",
             "language": "en",
             "published_at": "2021-01-01T00:00:00.0000000Z",
