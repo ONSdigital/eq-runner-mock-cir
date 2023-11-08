@@ -82,14 +82,16 @@ def get_cir_metadata(
     language: str | None = None,
     status: str | None = None,
 ) -> list[CiMetadata]:
-    """Return metadata objects filtered by any of the params which are provided (all optional)"""
+    """
+    Return metadata objects filtered by any of the params which are provided (all optional).
+    Raises not found if no metadata can be found for the given params"""
     metadata_collection, _ = get_schema_data()
 
     if all(param is None for param in (survey_id, form_type, language, status)):
         return metadata_collection
 
     # otherwise filter by the params that have been provided
-    return [
+    if filtered_metadata := [
         metadata
         for metadata in metadata_collection
         if not (
@@ -98,7 +100,9 @@ def get_cir_metadata(
             or (language and metadata.language != language)
             or (status and metadata.status != status)
         )
-    ]
+    ]:
+        return filtered_metadata
+    raise HTTPException(status_code=404)
 
 
 @app.get("/v2/retrieve_collection_instrument")

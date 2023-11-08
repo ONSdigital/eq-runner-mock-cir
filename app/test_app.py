@@ -87,3 +87,14 @@ def test_get_metadata_no_parameters():
     schema_count = len(list(Path(SCHEMAS_PATH).rglob("*.json")))
     assert response.status_code == 200
     assert len(response.json()) == schema_count
+
+
+def test_get_metadata_not_found():
+    """Check no matching metadata returns 404"""
+    response = client.get(
+        "/v2/ci_metadata",
+        params={
+            "form_type": "invalid_form_type",
+        },
+    )
+    assert response.status_code == 404
