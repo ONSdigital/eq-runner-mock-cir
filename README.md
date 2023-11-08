@@ -22,7 +22,6 @@ To run the FastAPI application locally using `uvicorn`, use the following comman
 
 ```bash
 make run
-
 ```
 
 The application will be accessible at `http://localhost:5004`.
@@ -63,18 +62,18 @@ To lint the code using black, run the following command:
 make lint
 ```
 
-### Testing
-
-To run the unit tests, run the following command:
-
-```bash
-make test
-```
-
 ### Load schemas
 
 To load in the schemas from `eq-questionnaire-schemas` and the test schemas from `eq-questionnaire-runner` run the following command:
 
 ```bash
 make load-schemas
+```
+
+### Testing
+
+To run the unit tests, first load schemas as the test require them, then run the following command:
+
+```bash
+make test
 ```
