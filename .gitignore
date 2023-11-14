@@ -160,4 +160,4 @@ cython_debug/
 .idea/
 
 # Ignore loaded in schemas
-schemas/*
+schemas/
