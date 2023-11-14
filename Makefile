@@ -11,5 +11,5 @@ test:
 	poetry run pytest .
 
 load-schemas:
-	./scripts/load_schemas.sh
+	./scripts/load_questionnaire_schemas.sh
 	./scripts/load_runner_schemas.sh
