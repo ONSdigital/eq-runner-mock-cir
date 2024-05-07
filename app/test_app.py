@@ -1,6 +1,7 @@
 """
 Unit tests require schemas to have been preloaded by the `make load-schemas` command
 """
+
 from pathlib import Path
 
 import pytest
