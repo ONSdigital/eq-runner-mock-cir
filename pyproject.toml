@@ -2,7 +2,7 @@
 name = "eq-runner-mock-cir"
 version = "0.1.0"
 description = "ONS Digital eQ Runner Mock CIR"
-authors = ["http://onsdigital.github.io"]
+authors = ["ONSDigital"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
