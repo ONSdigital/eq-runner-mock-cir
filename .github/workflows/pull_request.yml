@@ -11,6 +11,8 @@ concurrency:
 
 jobs:
   lint-test:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
 
     steps:
@@ -43,6 +45,8 @@ jobs:
         run: make test
 
   docker-push:
+    permissions:
+      content: read
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
