@@ -101,22 +101,20 @@ def test_get_metadata_v3_guid():
         },
     )
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "ci_version": 1,
-            "data_version": "0.0.1",
-            "validator_version": "0.0.0",
-            "classifier_type": "form_type",
-            "classifier_value": "1814",
-            "guid": "bcde3322-236f-58e3-2cb7-d34bb5181f03",
-            "language": "en",
-            "published_at": "2021-01-01T00:00:00.0000000Z",
-            "survey_id": "202",
-            "title": "Annual Business Survey",
-            "schema_name": "abs_1814",
-            "sds_schema": "",
-        },
-    ]
+    assert response.json() == {
+        "ci_version": 1,
+        "data_version": "0.0.1",
+        "validator_version": "0.0.0",
+        "classifier_type": "form_type",
+        "classifier_value": "1814",
+        "guid": "bcde3322-236f-58e3-2cb7-d34bb5181f03",
+        "language": "en",
+        "published_at": "2021-01-01T00:00:00.0000000Z",
+        "survey_id": "202",
+        "title": "Annual Business Survey",
+        "schema_name": "abs_1814",
+        "sds_schema": "",
+    }
 
 
 def test_get_metadata_no_parameters():

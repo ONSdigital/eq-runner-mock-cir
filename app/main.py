@@ -109,26 +109,30 @@ def get_cir_metadata(
     raise HTTPException(status_code=404)
 
 
+@lru_cache(maxsize=1)
+def get_instrument_metadata(guid: UUID) -> CiMetadata:
+    """Return the CiMetadata object for the given guid, or raise HTTPException if not found"""
+    for schema in SCHEMAS_PATH.rglob("*.json"):
+        schema_json = json.loads(schema.read_text())
+        generated_guid = generate_guid_for_schema(schema.stem, schema_json["language"])
+        if generated_guid == guid:
+            return get_ci_metadata(guid, schema.stem, schema_json)
+    raise HTTPException(status_code=404, detail="Metadata not found for the given guid")
+
+
 @app.get("/v3/ci_metadata")
 def get_cir_metadata_v3(
-    guid: UUID | None = None,
-) -> list[CiMetadata]:
+    guid: UUID,
+) -> dict:
     """
-    Return metadata objects filtered by any of the params which are provided (all optional).
-    Raises not found if no metadata can be found for the given params"""
-    metadata_collection, _ = get_schema_data()
-
-    if all(param is None for param in (guid,)):
-        return metadata_collection
-
-    # otherwise filter by the params that have been provided
-    if filtered_metadata := [
-        metadata
-        for metadata in metadata_collection
-        if not ((guid and metadata.guid != guid))
-    ]:
-        return filtered_metadata
-    raise HTTPException(status_code=404)
+    Return the metadata object for the given guid as a dict.
+    Raises not found if no metadata can be found for the given guid.
+    """
+    try:
+        metadata = get_instrument_metadata(guid)
+        return metadata.model_dump()
+    except HTTPException as e:
+        raise e
 
 
 @app.get("/v2/retrieve_collection_instrument")
