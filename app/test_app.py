@@ -86,6 +86,7 @@ def test_get_metadata_partial_parameters(parameters):
             "published_at": "2021-01-01T00:00:00.0000000Z",
             "survey_id": "202",
             "title": "Annual Business Survey",
+            "schema_name": "abs_1814",
             "sds_schema": "",
         },
     ]
@@ -112,6 +113,7 @@ def test_get_metadata_v3_guid():
             "published_at": "2021-01-01T00:00:00.0000000Z",
             "survey_id": "202",
             "title": "Annual Business Survey",
+            "schema_name": "abs_1814",
             "sds_schema": "",
         },
     ]

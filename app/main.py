@@ -31,6 +31,7 @@ class CiMetadata(BaseModel):
     published_at: str
     survey_id: str
     title: str
+    schema_name: str
     # Optional fields
     sds_schema: str | SkipJsonSchema[None] = ""
 
@@ -55,9 +56,8 @@ def get_ci_metadata(guid: UUID, schema_name: str, schema_json: dict) -> CiMetada
         "validator_version": "0.0.0",
         "classifier_type": "form_type",
         "classifier_value": schema_json.get("form_type", "0000"),
+        "schema_name": schema_name,
     }
-    # for the mock, set form type to the schema name for ease of identifying the schema
-    schema_json["form_type"] = schema_name
     return CiMetadata.model_validate(
         {**mock_data, **schema_json, "guid": guid}, from_attributes=True
     )
