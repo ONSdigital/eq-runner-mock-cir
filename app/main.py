@@ -31,6 +31,7 @@ class CiMetadata(BaseModel):
     published_at: str
     survey_id: str
     title: str
+    # schema_name added for launcher use. It is not part of the real CIR output.
     schema_name: str
     # Optional fields
     sds_schema: str | SkipJsonSchema[None] = ""
