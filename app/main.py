@@ -78,7 +78,7 @@ def get_schema_data() -> tuple[list[CiMetadata], dict[UUID, dict]]:
 
 
 @app.get("/v2/ci_metadata")
-def get_cir_metadata(
+def get_cir_metadata_v2(
     survey_id: str | None = None,
     classifier_type: str | None = None,
     classifier_value: str | None = None,
@@ -124,7 +124,7 @@ def get_instrument_metadata(guid: UUID) -> CiMetadata:
 @app.get("/v3/ci_metadata")
 def get_cir_metadata_v3(
     guid: UUID,
-) -> dict:
+) -> dict[str, str | int | UUID]:
     """
     Return the metadata object for the given guid as a dict.
     Raises not found if no metadata can be found for the given guid.

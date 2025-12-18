@@ -67,7 +67,7 @@ def test_get_instrument_invalid_uuid():
         {"classifier_type": "form_type", "classifier_value": "1814"},
     ],
 )
-def test_get_metadata_partial_parameters(parameters):
+def test_get_metadata_v2_partial_parameters(parameters):
     """Check that the schema valid for all these parameter combinations is returned"""
     response = client.get(
         "/v2/ci_metadata",
@@ -117,7 +117,7 @@ def test_get_metadata_v3_guid():
     }
 
 
-def test_get_metadata_no_parameters():
+def test_get_metadata_v2_no_parameters():
     """Check that no parameters returns metadata for all schemas"""
     response = client.get(
         "/v2/ci_metadata",
@@ -127,13 +127,24 @@ def test_get_metadata_no_parameters():
     assert len(response.json()) == schema_count
 
 
-def test_get_metadata_not_found():
+def test_get_metadata_v2_not_found():
     """Check no matching metadata returns 404"""
     response = client.get(
         "/v2/ci_metadata",
         params={
             "classifier_type": "form_type",
             "classifier_value": "invalid_form_type",
+        },
+    )
+    assert response.status_code == 404
+
+
+def test_get_metadata_v3_not_found():
+    """Check no matching metadata returns 404"""
+    response = client.get(
+        "/v3/ci_metadata",
+        params={
+            "guid": "00000000-0000-0000-0000-000000000000",
         },
     )
     assert response.status_code == 404
