@@ -129,11 +129,8 @@ def get_cir_metadata_v3(
     Return the metadata object for the given guid as a dict.
     Raises not found if no metadata can be found for the given guid.
     """
-    try:
-        metadata = get_instrument_metadata(guid)
-        return metadata.model_dump()
-    except HTTPException as e:
-        raise e
+    metadata = get_instrument_metadata(guid)
+    return metadata.model_dump()
 
 
 @app.get("/v2/retrieve_collection_instrument")
