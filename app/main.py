@@ -31,8 +31,8 @@ class CiMetadata(BaseModel):
     published_at: str
     survey_id: str
     title: str
-    # schema_name added for launcher use. It is not part of the real CIR output.
-    schema_name: str
+    # dev_schema_name added for launcher use. It is not part of the real CIR output.
+    dev_schema_name: str
     # Optional fields
     sds_schema: str | SkipJsonSchema[None] = ""
 
@@ -57,7 +57,7 @@ def get_ci_metadata(guid: UUID, schema_name: str, schema_json: dict) -> CiMetada
         "validator_version": "0.0.0",
         "classifier_type": "form_type",
         "classifier_value": schema_json.get("form_type", "0000"),
-        "schema_name": schema_name,
+        "dev_schema_name": schema_name,
     }
     return CiMetadata.model_validate(
         {**mock_data, **schema_json, "guid": guid}, from_attributes=True
