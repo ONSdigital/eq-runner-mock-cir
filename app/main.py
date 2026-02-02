@@ -23,15 +23,16 @@ class CiMetadata(BaseModel):
     # Required fields
     ci_version: int
     data_version: str
-    form_type: str
-    id: UUID
+    validator_version: str
+    classifier_type: str
+    classifier_value: str
+    guid: UUID
     language: str
     published_at: str
-    schema_version: str
-    status: str
     survey_id: str
     title: str
-    description: str
+    # dev_schema_name added for launcher use. It is not part of the real CIR output.
+    dev_schema_name: str
     # Optional fields
     sds_schema: str | SkipJsonSchema[None] = ""
 
@@ -51,14 +52,15 @@ def get_ci_metadata(guid: UUID, schema_name: str, schema_json: dict) -> CiMetada
     """
     mock_data = {
         "published_at": "2021-01-01T00:00:00.0000000Z",
-        "description": "Mock description",
         "status": "PUBLISHED",
         "ci_version": 1,
+        "validator_version": "0.0.0",
+        "classifier_type": "form_type",
+        "classifier_value": schema_json.get("form_type", "0000"),
+        "dev_schema_name": schema_name,
     }
-    # for the mock, set form type to the schema name for ease of identifying the schema
-    schema_json["form_type"] = schema_name
     return CiMetadata.model_validate(
-        {**mock_data, **schema_json, "id": guid}, from_attributes=True
+        {**mock_data, **schema_json, "guid": guid}, from_attributes=True
     )
 
 
@@ -76,18 +78,21 @@ def get_schema_data() -> tuple[list[CiMetadata], dict[UUID, dict]]:
 
 
 @app.get("/v2/ci_metadata")
-def get_cir_metadata(
+def get_cir_metadata_v2(
     survey_id: str | None = None,
-    form_type: str | None = None,
+    classifier_type: str | None = None,
+    classifier_value: str | None = None,
     language: str | None = None,
-    status: str | None = None,
 ) -> list[CiMetadata]:
     """
     Return metadata objects filtered by any of the params which are provided (all optional).
     Raises not found if no metadata can be found for the given params"""
     metadata_collection, _ = get_schema_data()
 
-    if all(param is None for param in (survey_id, form_type, language, status)):
+    if all(
+        param is None
+        for param in (survey_id, classifier_type, classifier_value, language)
+    ):
         return metadata_collection
 
     # otherwise filter by the params that have been provided
@@ -96,13 +101,36 @@ def get_cir_metadata(
         for metadata in metadata_collection
         if not (
             (survey_id and metadata.survey_id != survey_id)
-            or (form_type and metadata.form_type != form_type)
+            or (classifier_type and metadata.classifier_type != classifier_type)
+            or (classifier_value and metadata.classifier_value != classifier_value)
             or (language and metadata.language != language)
-            or (status and metadata.status != status)
         )
     ]:
         return filtered_metadata
     raise HTTPException(status_code=404)
+
+
+@lru_cache(maxsize=1)
+def get_instrument_metadata(guid: UUID) -> CiMetadata:
+    """Return the CiMetadata object for the given guid, or raise HTTPException if not found"""
+    for schema in SCHEMAS_PATH.rglob("*.json"):
+        schema_json = json.loads(schema.read_text())
+        generated_guid = generate_guid_for_schema(schema.stem, schema_json["language"])
+        if generated_guid == guid:
+            return get_ci_metadata(guid, schema.stem, schema_json)
+    raise HTTPException(status_code=404, detail="Metadata not found for the given guid")
+
+
+@app.get("/v3/ci_metadata")
+def get_cir_metadata_v3(
+    guid: UUID,
+) -> dict[str, str | int | UUID]:
+    """
+    Return the metadata object for the given guid as a dict.
+    Raises not found if no metadata can be found for the given guid.
+    """
+    metadata = get_instrument_metadata(guid)
+    return metadata.model_dump()
 
 
 @app.get("/v2/retrieve_collection_instrument")

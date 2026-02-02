@@ -52,13 +52,22 @@ def test_get_instrument_invalid_uuid():
 @pytest.mark.parametrize(
     "parameters",
     [
-        {"survey_id": "001", "form_type": "health_demo", "language": "en"},
-        {"survey_id": "001", "form_type": "health_demo"},
-        {"form_type": "health_demo", "language": "en"},
-        {"form_type": "health_demo"},
+        {
+            "survey_id": "202",
+            "classifier_type": "form_type",
+            "classifier_value": "1814",
+            "language": "en",
+        },
+        {
+            "survey_id": "202",
+            "classifier_type": "form_type",
+            "classifier_value": "1814",
+        },
+        {"classifier_type": "form_type", "classifier_value": "1814", "language": "en"},
+        {"classifier_type": "form_type", "classifier_value": "1814"},
     ],
 )
-def test_get_metadata_partial_parameters(parameters):
+def test_get_metadata_v2_partial_parameters(parameters):
     """Check that the schema valid for all these parameter combinations is returned"""
     response = client.get(
         "/v2/ci_metadata",
@@ -68,22 +77,47 @@ def test_get_metadata_partial_parameters(parameters):
     assert response.json() == [
         {
             "ci_version": 1,
-            "data_version": "0.0.3",
-            "form_type": "health_demo",
-            "id": "f03eef55-0804-385c-c6a5-b099b483d9b1",
+            "data_version": "0.0.1",
+            "validator_version": "0.0.0",
+            "classifier_type": "form_type",
+            "classifier_value": "1814",
+            "guid": "bcde3322-236f-58e3-2cb7-d34bb5181f03",
             "language": "en",
             "published_at": "2021-01-01T00:00:00.0000000Z",
-            "schema_version": "0.0.1",
-            "status": "PUBLISHED",
-            "survey_id": "001",
-            "title": "Labour Market Survey",
-            "description": "Mock description",
+            "survey_id": "202",
+            "title": "Annual Business Survey",
+            "dev_schema_name": "abs_1814",
             "sds_schema": "",
         },
     ]
 
 
-def test_get_metadata_no_parameters():
+def test_get_metadata_v3_guid():
+    """Check that the schema is valid for the provided guid parameter"""
+    response = client.get(
+        "/v3/ci_metadata",
+        params={
+            "guid": "bcde3322-236f-58e3-2cb7-d34bb5181f03",
+        },
+    )
+    assert response.status_code == 200
+    assert response.json() == {
+        "ci_version": 1,
+        "data_version": "0.0.1",
+        "validator_version": "0.0.0",
+        "classifier_type": "form_type",
+        "classifier_value": "1814",
+        "guid": "bcde3322-236f-58e3-2cb7-d34bb5181f03",
+        "language": "en",
+        "published_at": "2021-01-01T00:00:00.0000000Z",
+        "survey_id": "202",
+        "title": "Annual Business Survey",
+        "dev_schema_name": "abs_1814",
+        "sds_schema": "",
+    }
+
+
+def test_get_metadata_v2_no_parameters():
     """Check that no parameters returns metadata for all schemas"""
     response = client.get(
         "/v2/ci_metadata",
@@ -93,12 +127,24 @@ def test_get_metadata_no_parameters():
     assert len(response.json()) == schema_count
 
 
-def test_get_metadata_not_found():
+def test_get_metadata_v2_not_found():
     """Check no matching metadata returns 404"""
     response = client.get(
         "/v2/ci_metadata",
         params={
-            "form_type": "invalid_form_type",
+            "classifier_type": "form_type",
+            "classifier_value": "invalid_form_type",
+        },
+    )
+    assert response.status_code == 404
+
+
+def test_get_metadata_v3_not_found():
+    """Check no matching metadata returns 404"""
+    response = client.get(
+        "/v3/ci_metadata",
+        params={
+            "guid": "00000000-0000-0000-0000-000000000000",
         },
     )
     assert response.status_code == 404
