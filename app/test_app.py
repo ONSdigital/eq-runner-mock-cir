@@ -24,7 +24,7 @@ def test_get_instrument_found():
     response_json = response.json()
     assert "sections" in response_json
     assert "questionnaire_flow" in response_json
-    assert response_json.get("title") == "Test Language Survey"
+    assert response_json.get("title") == "Test Language"
 
 
 def test_get_instrument_not_found():
