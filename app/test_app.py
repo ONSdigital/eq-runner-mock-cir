@@ -15,7 +15,7 @@ client = TestClient(app)
 def test_get_instrument_found():
     """Tests the hash for the en version of test_language returns 200 with valid json"""
     response = client.get(
-        "/v2/retrieve_collection_instrument",
+        "/collection-instruments/schema",
         params={
             "guid": "b0ae3c1f-9dd7-dcb2-bca5-9f7558fd2d07",
         },
@@ -30,7 +30,7 @@ def test_get_instrument_found():
 def test_get_instrument_not_found():
     """Check an invalid guid returns 404"""
     response = client.get(
-        "/v2/retrieve_collection_instrument",
+        "/collection-instruments/schema",
         params={
             "guid": "00000000-0000-0000-0000-000000000000",
         },
@@ -41,7 +41,7 @@ def test_get_instrument_not_found():
 def test_get_instrument_invalid_uuid():
     """Check that an invalid uuid returns a 422"""
     response = client.get(
-        "/v2/retrieve_collection_instrument",
+        "/collection-instruments/schema",
         params={
             "guid": "invalid_uuid",
         },
@@ -70,7 +70,7 @@ def test_get_instrument_invalid_uuid():
 def test_get_metadata_v2_partial_parameters(parameters):
     """Check that the schema valid for all these parameter combinations is returned"""
     response = client.get(
-        "/v2/ci_metadata",
+        "/collection-instruments/metadata",
         params=parameters,
     )
     assert response.status_code == 200
@@ -120,7 +120,7 @@ def test_get_metadata_v3_guid():
 def test_get_metadata_v2_no_parameters():
     """Check that no parameters returns metadata for all schemas"""
     response = client.get(
-        "/v2/ci_metadata",
+        "/collection-instruments/metadata",
     )
     schema_count = len(list(Path(SCHEMAS_PATH).rglob("*.json")))
     assert response.status_code == 200
@@ -130,7 +130,7 @@ def test_get_metadata_v2_no_parameters():
 def test_get_metadata_v2_not_found():
     """Check no matching metadata returns 404"""
     response = client.get(
-        "/v2/ci_metadata",
+        "/collection-instruments/metadata",
         params={
             "classifier_type": "form_type",
             "classifier_value": "invalid_form_type",

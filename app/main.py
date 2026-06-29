@@ -77,7 +77,7 @@ def get_schema_data() -> tuple[list[CiMetadata], dict[UUID, dict]]:
     return metadata_collection, schema_map
 
 
-@app.get("/v2/ci_metadata")
+@app.get("/collection-instruments/metadata")
 def get_cir_metadata_v2(
     survey_id: str | None = None,
     classifier_type: str | None = None,
@@ -133,7 +133,7 @@ def get_cir_metadata_v3(
     return metadata.model_dump()
 
 
-@app.get("/v2/retrieve_collection_instrument")
+@app.get("/collection-instruments/schema")
 def get_collection_instrument(guid: UUID) -> dict:
     """Return the json schema for the given guid or raises not found"""
     _, schema_map = get_schema_data()
