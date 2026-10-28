@@ -38,8 +38,5 @@ jobs:
       - name: Lint
         run: make lint
 
-      - name: Load schemas
-        run: make load-schemas
-
       - name: Run pytest
         run: make test
