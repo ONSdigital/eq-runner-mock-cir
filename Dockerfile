@@ -8,13 +8,13 @@ ENV HTTP_KEEP_ALIVE 650
 
 # Install system dependencies
 RUN apt-get update \
-    && apt-get install build-essential jq curl unzip -y --no-install-recommends gcc
+    && apt-get install build-essential -y --no-install-recommends gcc
 
 # Set the working directory in the container
 WORKDIR /app
 
 # Copy only the necessary files for poetry installation
-COPY pyproject.toml poetry.lock Makefile scripts/ /app/
+COPY pyproject.toml poetry.lock /app/
 
 # Install Poetry
 RUN pip install poetry==1.5.1
@@ -28,8 +28,6 @@ COPY . /app
 
 # Expose the port that Gunicorn will listen on
 EXPOSE 5004
-
-RUN make load-schemas
 
 # Start Gunicorn to serve the application
 CMD ["gunicorn", "app.main:app", "-b", "0.0.0.0:5004", "--worker-class", "uvicorn.workers.UvicornWorker", "--timeout", "0"]

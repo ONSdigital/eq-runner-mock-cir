@@ -1,0 +1,463 @@
+{
+    "mime_type": "application/json/ons/eq",
+    "language": "en",
+    "schema_version": "0.0.1",
+    "data_version": "0.0.3",
+    "survey_id": "999",
+    "title": "Test Calculated Summary Dependent Questions",
+    "description": "A schema to showcase Calculated Summary with dependent questions.",
+    "questionnaire_flow": {
+        "type": "Hub",
+        "options": {
+            "required_completed_sections": ["default-section", "list-collector-section"]
+        }
+    },
+    "sections": [
+        {
+            "id": "default-section",
+            "title": "Section 1",
+            "summary": {
+                "show_on_completion": false,
+                "collapsible": false
+            },
+            "show_on_hub": true,
+            "groups": [
+                {
+                    "id": "group-1",
+                    "blocks": [
+                        {
+                            "id": "block-1",
+                            "type": "Question",
+                            "question": {
+                                "id": "question-1",
+                                "title": "How much did you spend on food?",
+                                "type": "General",
+                                "answers": [
+                                    {
+                                        "id": "answer-1",
+                                        "mandatory": true,
+                                        "type": "Currency",
+                                        "label": "Money spent on food",
+                                        "description": "Enter the full value",
+                                        "minimum": {
+                                            "value": 0,
+                                            "exclusive": true
+                                        },
+                                        "decimal_places": 2,
+                                        "currency": "GBP"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": "block-2",
+                            "type": "Question",
+                            "question": {
+                                "id": "question-2",
+                                "title": "Of the money spent on food, how much did you spend on vegetables?",
+                                "type": "General",
+                                "answers": [
+                                    {
+                                        "id": "answer-2",
+                                        "mandatory": true,
+                                        "type": "Currency",
+                                        "label": "Money spent on vegetables",
+                                        "description": "Enter the full value",
+                                        "minimum": {
+                                            "value": 0,
+                                            "exclusive": true
+                                        },
+                                        "maximum": {
+                                            "value": {
+                                                "identifier": "answer-1",
+                                                "source": "answers"
+                                            },
+                                            "exclusive": false
+                                        },
+                                        "decimal_places": 2,
+                                        "currency": "GBP"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": "block-3",
+                            "type": "Question",
+                            "question": {
+                                "id": "question-3",
+                                "title": "How much did you spend on clothes?",
+                                "type": "General",
+                                "answers": [
+                                    {
+                                        "id": "answer-3",
+                                        "mandatory": true,
+                                        "type": "Currency",
+                                        "label": "Money spent on clothes",
+                                        "description": "Enter the full value",
+                                        "minimum": {
+                                            "value": 0,
+                                            "exclusive": true
+                                        },
+                                        "decimal_places": 2,
+                                        "currency": "GBP"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": "block-4",
+                            "type": "Question",
+                            "question": {
+                                "id": "question-4",
+                                "title": "Of the money spent on clothes, how much did you spend on shoes?",
+                                "type": "General",
+                                "answers": [
+                                    {
+                                        "id": "answer-4",
+                                        "mandatory": true,
+                                        "type": "Currency",
+                                        "label": "Money spent on shoes",
+                                        "description": "Enter the full value",
+                                        "minimum": {
+                                            "value": 0,
+                                            "exclusive": true
+                                        },
+                                        "maximum": {
+                                            "value": {
+                                                "identifier": "answer-3",
+                                                "source": "answers"
+                                            },
+                                            "exclusive": false
+                                        },
+                                        "decimal_places": 2,
+                                        "currency": "GBP"
+                                    }
+                                ]
+                            }
+                        },
+
+                        {
+                            "id": "calculated-summary-block",
+                            "type": "CalculatedSummary",
+                            "title": "We have calculated your total spend to be <strong>%(total)s</strong>. Is this correct?",
+                            "calculation": {
+                                "calculation_type": "sum",
+                                "answers_to_calculate": ["answer-1", "answer-3"],
+                                "title": "Total capital expenditure"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "list-collector-section",
+            "title": "Additional sites",
+            "summary": {
+                "show_on_completion": false,
+                "collapsible": false,
+                "items": [
+                    {
+                        "type": "List",
+                        "for_list": "additional_sites_name",
+                        "title": "What was the business name for this site?",
+                        "item_anchor_answer_id": "business-name",
+                        "item_label": "<p>Business name</p>",
+                        "add_link_text": "Add item to this list",
+                        "empty_list_text": "There are no items"
+                    }
+                ],
+                "show_non_item_answers": true
+            },
+            "show_on_hub": true,
+            "groups": [
+                {
+                    "id": "list-collector-group",
+                    "blocks": [
+                        {
+                            "id": "additional-sites-for-your-business",
+                            "type": "ListCollectorDrivingQuestion",
+                            "for_list": "additional_sites_name",
+                            "question": {
+                                "id": "question-driving-further-additional-sites-for-your-business",
+                                "type": "General",
+                                "title": "Did your business have any additional sites that were staffed for a minimum of 20 hours per week or had planned activity for more than a year?",
+                                "answers": [
+                                    {
+                                        "id": "additional-sites-answer",
+                                        "mandatory": true,
+                                        "type": "Radio",
+                                        "options": [
+                                            {
+                                                "label": "Yes",
+                                                "value": "Yes",
+                                                "action": {
+                                                    "type": "RedirectToListAddBlock",
+                                                    "params": {
+                                                        "block_id": "add-block-business-name-trading-style-and-address-for-this-additional-site",
+                                                        "list_name": "additional_sites_name"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": "No"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            "routing_rules": [
+                                {
+                                    "section": "End",
+                                    "when": {
+                                        "in": [
+                                            {
+                                                "source": "answers",
+                                                "identifier": "additional-sites-answer"
+                                            },
+                                            ["No"]
+                                        ]
+                                    }
+                                },
+                                {
+                                    "block": "further-additional-sites-for-your-business"
+                                }
+                            ],
+                            "page_title": "Additional sites for your business"
+                        },
+                        {
+                            "id": "further-additional-sites-for-your-business",
+                            "type": "ListCollector",
+                            "page_title": "Further additional sites for your business",
+                            "for_list": "additional_sites_name",
+                            "question": {
+                                "id": "list-collector-question-further-additional-sites-for-your-business",
+                                "type": "General",
+                                "title": "Did you have any other sites that were staffed for a minimum of 20 hours per week or had planned activity for more than a year?",
+                                "answers": [
+                                    {
+                                        "id": "any-other-additional-sites-answer",
+                                        "mandatory": true,
+                                        "type": "Radio",
+                                        "options": [
+                                            {
+                                                "label": "Yes",
+                                                "value": "Yes",
+                                                "action": {
+                                                    "type": "RedirectToListAddBlock"
+                                                }
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": "No"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            "add_block": {
+                                "id": "add-block-business-name-trading-style-and-address-for-this-additional-site",
+                                "type": "ListAddQuestion",
+                                "page_title": "Business name, trading style and address for this additional site",
+                                "cancel_text": "Don’t need to add this item",
+                                "question": {
+                                    "id": "add-block-question-business-name-trading-style-and-address-for-this-additional-site",
+                                    "type": "General",
+                                    "title": "What was the business name for this site?",
+                                    "answers": [
+                                        {
+                                            "id": "business-name",
+                                            "mandatory": true,
+                                            "type": "TextField",
+                                            "label": "Business name"
+                                        }
+                                    ]
+                                }
+                            },
+                            "edit_block": {
+                                "id": "edit-block-business-name-trading-style-and-address-for-this-additional-site",
+                                "type": "ListEditQuestion",
+                                "page_title": "Business name, trading style and address for this additional site",
+                                "cancel_text": "Don’t need to edit this item",
+                                "question": {
+                                    "id": "edit-block-question-business-name-trading-style-and-address-for-this-additional-site",
+                                    "type": "General",
+                                    "title": "What was the business name, trading style and address for this site?",
+                                    "answers": [
+                                        {
+                                            "id": "business-name",
+                                            "mandatory": true,
+                                            "type": "TextField",
+                                            "label": "Business name"
+                                        }
+                                    ]
+                                }
+                            },
+                            "remove_block": {
+                                "id": "remove-block-business-name-trading-style-and-address-for-this-additional-site",
+                                "type": "ListRemoveQuestion",
+                                "cancel_text": "Don’t need to remove this item?",
+                                "question": {
+                                    "id": "remove-block-question-business-name-trading-style-and-address-for-this-additional-site",
+                                    "type": "General",
+                                    "title": "Are you sure you want to remove this item?",
+                                    "warning": "All of the information about this item will be deleted",
+                                    "answers": [
+                                        {
+                                            "id": "remove-confirmation-business-name-trading-style-and-address-for-this-additional-site",
+                                            "mandatory": true,
+                                            "type": "Radio",
+                                            "options": [
+                                                {
+                                                    "label": "Yes",
+                                                    "value": "Yes",
+                                                    "action": {
+                                                        "type": "RemoveListItemAndAnswers"
+                                                    }
+                                                },
+                                                {
+                                                    "label": "No",
+                                                    "value": "No"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            "summary": {
+                                "title": "Summary",
+                                "item_title": {
+                                    "text": "{listcollector_summary_placeholder}",
+                                    "placeholders": [
+                                        {
+                                            "placeholder": "listcollector_summary_placeholder",
+                                            "transforms": [
+                                                {
+                                                    "arguments": {
+                                                        "delimiter": " ",
+                                                        "list_to_concatenate": [
+                                                            {
+                                                                "source": "answers",
+                                                                "identifier": "business-name"
+                                                            }
+                                                        ]
+                                                    },
+                                                    "transform": "concatenate_list"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "repeating-section",
+            "title": "Additional site details",
+            "repeat": {
+                "for_list": "additional_sites_name",
+                "title": {
+                    "text": "{repeat_title_placeholder}",
+                    "placeholders": [
+                        {
+                            "placeholder": "repeat_title_placeholder",
+                            "transforms": [
+                                {
+                                    "arguments": {
+                                        "delimiter": " ",
+                                        "list_to_concatenate": [
+                                            {
+                                                "source": "answers",
+                                                "identifier": "business-name"
+                                            }
+                                        ]
+                                    },
+                                    "transform": "concatenate_list"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            "summary": {
+                "show_on_completion": false,
+                "page_title": "Details of Additional Sites in Great Britain",
+                "collapsible": false
+            },
+            "show_on_hub": true,
+            "groups": [
+                {
+                    "id": "repeating-group",
+                    "blocks": [
+                        {
+                            "id": "number-of-employees-working-at-this-additional-site",
+                            "type": "Question",
+                            "question": {
+                                "id": "question-number-of-employees-working-at-this-additional-site",
+                                "title": "What was the number of full-time and part-time employees that your business paid from its payroll, for this site?",
+                                "type": "General",
+                                "answers": [
+                                    {
+                                        "id": "number-full-time-employees",
+                                        "mandatory": true,
+                                        "type": "Number",
+                                        "label": "Number of full-time employees",
+                                        "decimal_places": 0
+                                    },
+                                    {
+                                        "id": "number-part-time-employees",
+                                        "mandatory": true,
+                                        "type": "Number",
+                                        "label": "Number of part-time employees",
+                                        "decimal_places": 0
+                                    }
+                                ]
+                            },
+                            "page_title": "Number of employees working at this additional site"
+                        },
+                        {
+                            "id": "calculated-number-of-employees-for-this-additional-site",
+                            "type": "CalculatedSummary",
+                            "page_title": "Calculated number of employees for this additional site",
+                            "title": "We have calculated the total number of employees that your business paid from its payroll, for this site, to be %(total)s. Is this correct?",
+                            "calculation": {
+                                "operation": {
+                                    "+": [
+                                        {
+                                            "identifier": "number-full-time-employees",
+                                            "source": "answers"
+                                        },
+                                        {
+                                            "identifier": "number-part-time-employees",
+                                            "source": "answers"
+                                        }
+                                    ]
+                                },
+                                "title": "Total number of employees paid from your business&#39;s payroll"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "theme": "default",
+    "metadata": [
+        {
+            "name": "user_id",
+            "type": "string"
+        },
+        {
+            "name": "period_id",
+            "type": "string"
+        },
+        {
+            "name": "ru_name",
+            "type": "string"
+        }
+    ]
+}
